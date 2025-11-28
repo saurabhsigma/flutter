@@ -16,9 +16,8 @@ class MyApp extends StatelessWidget {
           child: Container(
             height: 100,
             width: 100,
-            margin: EdgeInsets.symmetric(vertical: 50, horizontal: 10),
             color: Colors.white,
-            child: Text('Hello!'),
+            child: Text('container 1'),
           ),
         ),
       ),
