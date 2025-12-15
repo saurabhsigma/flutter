@@ -1,29 +1,31 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/test_model.dart';
 import '../models/content_models.dart';
-import 'mock_data.dart';
+// ...existing code...
+import '../repositories/test_repository.dart';
+import '../repositories/video_repository.dart';
+import '../repositories/material_repository.dart';
 
-// Read-only data providers
-final testsProvider = Provider<List<TestModel>>((ref) {
-  return MockData.tests;
+// Live data providers using Firestore
+final testsProvider = StreamProvider<List<TestModel>>((ref) {
+  final repo = ref.watch(testRepositoryProvider);
+  return repo.getTests();
 });
 
-final videosProvider = Provider<List<VideoModel>>((ref) {
-  return MockData.videos;
+final videosProvider = StreamProvider<List<VideoModel>>((ref) {
+  final repo = ref.watch(videoRepositoryProvider);
+  return repo.getVideos();
 });
 
-final materialsProvider = Provider<List<MaterialModel>>((ref) {
-  return MockData.materials;
+final materialsProvider = StreamProvider<List<MaterialModel>>((ref) {
+  final repo = ref.watch(materialRepositoryProvider);
+  return repo.getMaterials();
 });
 
 // State for fetching specific items
-final testProvider = Provider.family<TestModel?, String>((ref, id) {
-  final tests = ref.watch(testsProvider);
-  try {
-    return tests.firstWhere((t) => t.id == id);
-  } catch (e) {
-    return null;
-  }
+final testProvider = FutureProvider.family<TestModel?, String>((ref, id) {
+  final repo = ref.watch(testRepositoryProvider);
+  return repo.getTest(id);
 });
 
 // --- User Progress State ---

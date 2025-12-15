@@ -112,22 +112,25 @@ class MockData {
       id: 'v1',
       title: 'Integration Basics',
       duration: '12:45',
-      thumbnailUrl: 'https://via.placeholder.com/300/4A00E0/FFFFFF?text=Integration',
+      thumbnailUrl: 'https://img.youtube.com/vi/5p2Q-Z18Zss/0.jpg', // Dynamic YT thumb
       description: 'Learn the fundamentals of calculus integration.',
+      youtubeId: '5p2Q-Z18Zss', // Example: Calculus
     ),
     VideoModel(
       id: 'v2',
       title: 'Modern History Overview',
       duration: '45:00',
-      thumbnailUrl: 'https://via.placeholder.com/300/8E2DE2/FFFFFF?text=History',
+      thumbnailUrl: 'https://img.youtube.com/vi/HP7L8bw5FvE/0.jpg',
       description: 'A deep dive into the industrial revolution.',
+      youtubeId: 'HP7L8bw5FvE', // Example: History
     ),
     VideoModel(
       id: 'v3',
       title: 'English Grammar Tips',
       duration: '08:30',
-      thumbnailUrl: 'https://via.placeholder.com/300/00D2FF/FFFFFF?text=Grammar',
+      thumbnailUrl: 'https://img.youtube.com/vi/1X_IAaNPvKU/0.jpg',
       description: 'Quick tips to improve your writing.',
+      youtubeId: '1X_IAaNPvKU', // Example: Grammar
     ),
   ];
 

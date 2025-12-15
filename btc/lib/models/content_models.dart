@@ -4,6 +4,7 @@ class VideoModel {
   final String duration;
   final String thumbnailUrl;
   final String description;
+  final String youtubeId;
 
   const VideoModel({
     required this.id,
@@ -11,6 +12,7 @@ class VideoModel {
     required this.duration,
     required this.thumbnailUrl,
     required this.description,
+    required this.youtubeId,
   });
 }
 

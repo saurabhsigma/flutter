@@ -11,88 +11,94 @@ class TestDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final test = ref.watch(testProvider(testId));
+    final asyncTest = ref.watch(testProvider(testId));
 
-    if (test == null) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Error')),
-        body: const Center(child: Text('Test not found')),
-      );
-    }
+    return asyncTest.when(
+      data: (test) {
+        if (test == null) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('Error')),
+            body: const Center(child: Text('Test not found')),
+          );
+        }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(test.title),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Hero Icon
-             Center(
-              child: Container(
-                padding: const EdgeInsets.all(30),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryBlue.withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.quiz, size: 80, color: AppColors.primaryBlue),
-              ),
-            ),
-            const SizedBox(height: 30),
-            
-            // Title & Info
-            Text(
-              test.title,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              test.subtitle,
-              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 40),
-
-            // Stats Row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(test.title),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildInfoItem(Icons.question_answer, '${test.questionCount} Questions'),
-                _buildInfoItem(Icons.timer, '${test.durationMinutes} Mins'),
-                _buildInfoItem(Icons.bar_chart, test.difficulty),
+                // Hero Icon
+                 Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(30),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryBlue.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.quiz, size: 80, color: AppColors.primaryBlue),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                
+                // Title & Info
+                Text(
+                  test.title,
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  test.subtitle,
+                  style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 40),
+
+                // Stats Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildInfoItem(Icons.question_answer, '${test.questionCount} Questions'),
+                    _buildInfoItem(Icons.timer, '${test.durationMinutes} Mins'),
+                    _buildInfoItem(Icons.bar_chart, test.difficulty),
+                  ],
+                ),
+                const Spacer(),
+
+                // Instructions
+                const Text(
+                  "Instructions:",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  "• Read all questions carefully.\n• No negative marking.\n• Click submit once done.",
+                  style: TextStyle(height: 1.5),
+                ),
+                const SizedBox(height: 30),
+
+                // Start Button
+                ElevatedButton(
+                  onPressed: () {
+                    context.push('/home/tests/$testId/attempt');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  child: const Text('Start Test'),
+                ),
               ],
             ),
-            const Spacer(),
-
-            // Instructions
-            const Text(
-              "Instructions:",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              "• Read all questions carefully.\n• No negative marking.\n• Click submit once done.",
-              style: TextStyle(height: 1.5),
-            ),
-            const SizedBox(height: 30),
-
-            // Start Button
-            ElevatedButton(
-              onPressed: () {
-                context.push('/home/tests/$testId/attempt');
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              child: const Text('Start Test'),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
+      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (e, s) => Scaffold(body: Center(child: Text('Error: $e'))),
     );
   }
 

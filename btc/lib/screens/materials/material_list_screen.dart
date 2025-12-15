@@ -9,41 +9,50 @@ class MaterialListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final materials = ref.watch(materialsProvider);
+    final asyncMaterials = ref.watch(materialsProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Study Materials')),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: materials.length,
-        itemBuilder: (context, index) {
-          final material = materials[index];
-          return Card(
-            elevation: 2,
-            margin: const EdgeInsets.only(bottom: 12),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            child: ListTile(
-              leading: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryViolet.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
+      body: asyncMaterials.when(
+        data: (materials) {
+            if (materials.isEmpty) {
+              return const Center(child: Text("No materials available."));
+            }
+            return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: materials.length,
+            itemBuilder: (context, index) {
+              final material = materials[index];
+              return Card(
+                elevation: 2,
+                margin: const EdgeInsets.only(bottom: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                child: ListTile(
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryViolet.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.picture_as_pdf, color: AppColors.primaryViolet),
+                  ),
+                  title: Text(material.title, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Text('${material.subject} • PDF'),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.download_rounded),
+                    onPressed: () {
+                       ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Downloading ${material.title}...')),
+                      );
+                    },
+                  ),
                 ),
-                child: const Icon(Icons.picture_as_pdf, color: AppColors.primaryViolet),
-              ),
-              title: Text(material.title, style: const TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Text('${material.subject} • PDF'),
-              trailing: IconButton(
-                icon: const Icon(Icons.download_rounded),
-                onPressed: () {
-                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Downloading ${material.title}...')),
-                  );
-                },
-              ),
-            ),
-          ).animate().fadeIn(delay: Duration(milliseconds: index * 100 + 100)).slideX(begin: 0.05, end: 0);
+              ).animate().fadeIn(delay: Duration(milliseconds: index * 100 + 100)).slideX(begin: 0.05, end: 0);
+            },
+          );
         },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => Center(child: Text('Error loading materials: $err')),
       ),
     );
   }
